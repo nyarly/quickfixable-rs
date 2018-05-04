@@ -1,0 +1,8 @@
+[package]
+name = "quickfix"
+version = "0.1.0"
+authors = ["Judson <nyarly@gmail.com>"]
+
+[dependencies]
+failure = "^0.1"
+nom = "^4.0.0-beta3"

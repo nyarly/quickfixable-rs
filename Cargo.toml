@@ -1,0 +1,10 @@
+[package]
+name = "quickfixable"
+version = "0.1.0"
+authors = ["Judson <nyarly@gmail.com>"]
+
+[dependencies]
+
+
+[workspace]
+members = ["quickfix"]
