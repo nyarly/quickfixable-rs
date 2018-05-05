@@ -5,4 +5,7 @@ authors = ["Judson <nyarly@gmail.com>"]
 
 [dependencies]
 failure = "^0.1"
-nom = "^4.0.0-beta3"
+
+[dependencies.nom]
+version = "^4.0.0-beta3"
+features = ["verbose-errors"]
