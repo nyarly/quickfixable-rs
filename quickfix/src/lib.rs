@@ -4,7 +4,8 @@ extern crate nom;
 
 use failure::Error;
 
-fn filter(i: &[u8]) -> Result<&[u8], Error> {
+// xxx pub
+pub fn filter(i: &[u8]) -> Result<&[u8], Error> {
     Ok(i)
 }
 
@@ -26,5 +27,5 @@ mod tests {
         assert_eq!(from_utf8(filtered), from_utf8(output))
     }
 }
-
-mod parse;
+// xxx pub
+pub mod parse;
