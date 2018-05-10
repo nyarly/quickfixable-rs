@@ -173,7 +173,7 @@ mod tests {
     fn stack_function() {
         parse_result(
             super::stack_function(b"testing.tRunner.func1(0xc4203a3520)\n"),
-            super::Line::StackFunc(&b"testing.tRunnger.func1"[..], vec![&b"0xc4203a3520"[..]]),
+            super::Line::StackFunc(&b"testing.tRunner.func1"[..], vec![&b"0xc4203a3520"[..]]),
         )
     }
 
