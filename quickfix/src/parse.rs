@@ -1,4 +1,4 @@
-use nom::{digit, double, eol, is_space, space, alpha1, alphanumeric1};
+use nom::{digit, double, eol, is_space, space, alpha1, alphanumeric1, hex_u32};
 
 #[derive(Debug, PartialEq)]
 pub enum Line<'g> {
@@ -8,6 +8,7 @@ pub enum Line<'g> {
     PanicCause(&'g [u8]),
     StackStart(i64),
     StackFunc(&'g [u8], Vec<&'g [u8]>),
+    StackLine(&'g [u8], i64, u32),
     Basic(&'g [u8]),
 }
 
@@ -17,7 +18,7 @@ named!(
     goline<Line>,
     alt!(
         fail_begin | failed_package | panic_start | panic_cause | stack_start | stack_function
-            | a_line
+            | stack_line | a_line
     )
 );
 
@@ -76,6 +77,15 @@ named!(
                     separated_list!(ws!(char!(',')), is_not!(",)")),
                     char!(')')
                 ) >> eol >> (Line::StackFunc(fname, parms))
+    )
+);
+
+// 	/home/judson/golang/src/github.com/opentable/sous/ext/singularity/deployer_test.go:293 +0x5bc
+named!(
+    stack_line<Line>,
+    do_parse!(
+        space >> file: is_not!(":") >> char!(':') >> line: integer >> tag!("+0x") >> offset: hex_u32
+            >> (Line::StackLine(file, line, offset))
     )
 );
 
@@ -174,6 +184,14 @@ mod tests {
         parse_result(
             super::stack_function(b"testing.tRunner.func1(0xc4203a3520)\n"),
             super::Line::StackFunc(&b"testing.tRunner.func1"[..], vec![&b"0xc4203a3520"[..]]),
+        )
+    }
+
+    #[test]
+    fn stack_line() {
+        parse_result(
+            super::stack_line(b" /home/judson/golang/src/github.com/opentable/sous/ext/singularity/deployer_test.go:293 +0x5bc\n"),
+            super::Line::StackLine(&b"/home/judson/golang/src/github.com/opentable/sous/ext/singularity/deployer_test.go"[..], 293, 1468),
         )
     }
 
